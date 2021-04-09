@@ -28,12 +28,11 @@ const App = () => {
       }  
     }
 
-    console.log(grid);
     setSchedule(grid)
   }, [employees])
 
   const generateSchedule = () => {
-    
+
   }
 
   return (

@@ -1,30 +1,75 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import './index.css';
+
+interface Employee {
+  name: string,
+  grade: string,
+}
+
+const employees: Employee[] = [
+  { name: 'Yvette King', grade: 'FNP' },
+  { name: 'Jullet Buchanan', grade: 'CNM' },
+  { name: 'Olivia Williams-Coombs', grade: 'CNM' },
+  { name: 'Latoya Chevannes', grade: 'CN' },
+  { name: 'Grace Levy-Baldwin', grade: 'CN' },
+];
 
 const App = () => {
-  const [text, setText] = useState<string>('')
-  const [names, setNames] = useState<string[]>([])
+  const [schedule, setSchedule] = useState<any>(null)
 
-  const addName = () => {
-    if (text !== '') {
-      setNames([...names, text])
-      setText('')
+  useEffect(() => {
+    let grid: any = [];
+
+    for (const _ of employees) grid.push([])
+
+    for (let row = 0; row < employees.length; row++) {
+      for (let col = 0; col < 7; col++) {
+        grid[row].push('D')
+      }  
     }
+
+    console.log(grid);
+    setSchedule(grid)
+  }, [employees])
+
+  const generateSchedule = () => {
+    
   }
 
   return (
     <>
-      <input
-        value={text}
-        onChange={(event) => setText(event.target.value)}
-      />
-      <button onClick={() => addName()}>Add</button>
-      <ul>
-        {names.map((name: string, index: number) =>
-          <li key={index}>{name}</li>)
-        }
-      </ul>
+      {schedule ?
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Grade</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+          <th>Saturday</th>
+          <th>Sunday</th>
+        </tr>
+        {employees.map((employee: Employee, rowIndex: number) =>
+          <tr key={rowIndex}>
+            <td>{employee.name}</td>
+            <td>{employee.grade}</td>
+            {[0, 1, 2, 3, 4, 5, 6].map((columnIndex: number) => 
+              <>
+                <td key={columnIndex}>{schedule[rowIndex][columnIndex]}</td>
+              </>
+            )}
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        )}
+      </table>
+      : <>Loading..</>}
+      <button onClick={() => generateSchedule()}>Go</button>
     </>
   )
 }

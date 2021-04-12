@@ -6,33 +6,87 @@ interface Employee {
   grade: string,
 }
 
-const employees: Employee[] = [
-  { name: 'Yvette King', grade: 'FNP' },
-  { name: 'Jullet Buchanan', grade: 'CNM' },
-  { name: 'Olivia Williams-Coombs', grade: 'CNM' },
-  { name: 'Latoya Chevannes', grade: 'CN' },
-  { name: 'Grace Levy-Baldwin', grade: 'CN' },
-];
+const availableGrades = ['FNP', 'CNM', 'CN', 'CEN', 'RGN']
+
+const employees: Employee[] = [];
+
+for (let i = 0; i < 10; i++) {
+  const name = `Nurse ${i + 1}`
+  const grade = availableGrades[Math.floor(Math.random() * availableGrades.length)];
+  employees.push({ name, grade })
+}
+
+const initializeGrid = () => {
+  let grid: any = [];
+
+  for (let col = 0; col < employees.length; col++) {
+    grid.push(['', '', '', '', '', '', ''])
+  }
+
+  return grid;
+}
 
 const App = () => {
   const [schedule, setSchedule] = useState<any>(null)
 
   useEffect(() => {
-    let grid: any = [];
-
-    for (const _ of employees) grid.push([])
-
-    for (let row = 0; row < employees.length; row++) {
-      for (let col = 0; col < 7; col++) {
-        grid[row].push('D')
-      }  
-    }
-
+    let grid = initializeGrid()
     setSchedule(grid)
-  }, [employees])
+  }, [employees, initializeGrid])
 
   const generateSchedule = () => {
+    const grid = initializeGrid()
 
+    // useful to track, helps when manul
+    const daysOffCount = [0, 0, 0, 0, 0, 0, 0]
+    const morningShiftCount = [0, 0, 0, 0, 0, 0, 0]
+    const nightShiftCount = [0, 0, 0, 0, 0, 0, 0]
+
+    let startingDayOff = 0
+
+    for (let i = 0; i < employees.length; i++) {
+      console.log('startingDayOff:', startingDayOff)
+
+      grid[i][startingDayOff] = 'D'
+      daysOffCount[startingDayOff] += 1
+
+      if (startingDayOff >= 6) {
+        startingDayOff = 0
+      } else {
+        startingDayOff++
+      }
+    }
+
+    for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+      const daysOff = daysOffCount[dayOfWeek]
+      const workingEmployeeCount = employees.length - daysOff
+
+      const morningShift = Math.floor(workingEmployeeCount / 2)
+      const nightShift = workingEmployeeCount - morningShift
+
+      let shifts = []
+
+      for (let i = 0; i < morningShift; i++) shifts.push('AM')
+      for (let i = 0; i < nightShift; i++) shifts.push('PM')
+
+      shifts = shifts.sort(() => Math.random() - 0.5)
+
+      let index = 0;
+
+      while (shifts.length > 0 && index < employees.length) {
+        const currentEmployeeShift = grid[index][dayOfWeek]
+
+        if (currentEmployeeShift !== 'D') {
+          grid[index][dayOfWeek] = shifts.pop()
+        }
+        
+        index++
+      }
+    }
+
+    console.log('generated:', grid, 'daysOffCount:', daysOffCount)
+
+    setSchedule(grid)
   }
 
   return (
@@ -56,7 +110,7 @@ const App = () => {
             <td>{employee.grade}</td>
             {[0, 1, 2, 3, 4, 5, 6].map((columnIndex: number) => 
               <>
-                <td key={columnIndex}>{schedule[rowIndex][columnIndex]}</td>
+                <td key={rowIndex + '_' + columnIndex}>{schedule[rowIndex][columnIndex]}</td>
               </>
             )}
             <td></td>

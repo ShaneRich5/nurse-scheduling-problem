@@ -26,6 +26,93 @@ const initializeGrid = () => {
   return grid;
 }
 
+interface EmployeeTableProps {
+  employees: Employee[]
+  schedule: any
+}
+
+const EmployeeTable = ({ employees, schedule }: EmployeeTableProps) => {
+  return (
+    <div className="flex flex-col">
+      <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+          <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Grade
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Monday
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tuesday
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Wednesday
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Thursday
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Friday
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Saturday
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Sunday
+                  </th>
+                  <th scope="col" className="relative px-6 py-3">
+                    <span className="sr-only">Edit</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {employees.map((employee: Employee, rowIndex: number) =>
+                  <tr key={rowIndex}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          <img className="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60" alt=""/>
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {employee.name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            sample@example.com
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{employee.grade}</div>
+                      <div className="text-sm text-gray-500">Nurse</div>
+                    </td>
+                    {[0, 1, 2, 3, 4, 5, 6].map((columnIndex: number) => 
+                      <td key={`${rowIndex}_${columnIndex}`} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {schedule[rowIndex][columnIndex]}
+                      </td>
+                    )}
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <a href="#" className="text-indigo-600 hover:text-indigo-900">Edit</a>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>   
+  )
+}
 
 const App = () => {
   const [schedule, setSchedule] = useState<any>(null)
@@ -82,13 +169,14 @@ const App = () => {
 
         if (currentEmployeeShift !== 'D') {
           grid[index][dayOfWeek] = shifts.pop()
+          
+          if (grid[index][dayOfWeek] === 'AM') morningShiftCount[dayOfWeek]++
+          if (grid[index][dayOfWeek] === 'PM') nightShiftCount[dayOfWeek]++
         }
 
         index++
       }
     }
-
-    console.log('generated:', grid, 'daysOffCount:', daysOffCount)
 
     setSchedule(grid)
   }
@@ -178,128 +266,21 @@ const App = () => {
     </header>
     <main>
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        
-<div className="flex flex-col">
-  <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-    <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-      <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Grade
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Monday
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tuesday
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Wednesday
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Thursday
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Friday
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Saturday
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Sunday
-              </th>
-              <th scope="col" className="relative px-6 py-3">
-                <span className="sr-only">Edit</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            <tr>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0 h-10 w-10">
-                    <img className="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60" alt=""/>
-                  </div>
-                  <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">
-                      Jane Cooper
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      jane.cooper@example.com
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">Regional Paradigm Technician</div>
-                <div className="text-sm text-gray-500">Optimization</div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                  Active
-                </span>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                Admin
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="#" className="text-indigo-600 hover:text-indigo-900">Edit</a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-        {/* <!-- Replace with your content --> */}
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg h-96"></div>
+
+        {schedule 
+          ? <EmployeeTable
+            employees={employees}
+            schedule={schedule}
+          />
+          : <h3>Loading...</h3>
+        }
+        <div className='mt-4'>
+          <button
+            className='w-full bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
+            onClick={() => generateSchedule()}
+          >Randomize</button>
         </div>
-        {/* <!-- /End replace --> */}
-        {schedule ?
-        
-      <table className='border-collapse border border-green-800'>
-        <thead>
-          <tr>
-            <th className='border border-green-600'>Name</th>
-            <th className='border border-green-600'>Grade</th>
-            <th className='border border-green-600'>Monday</th>
-            <th className='border border-green-600'>Tuesday</th>
-            <th className='border border-green-600'>Wednesday</th>
-            <th className='border border-green-600'>Thursday</th>
-            <th className='border border-green-600'>Friday</th>
-            <th className='border border-green-600'>Saturday</th>
-            <th className='border border-green-600'>Sunday</th>
-          </tr>
-        </thead>
-        <tbody>
-          {employees.map((employee: Employee, rowIndex: number) =>
-            <tr key={rowIndex}>
-              <td className='border border-green-600'>{employee.name}</td>
-              <td className='border border-green-600'>{employee.grade}</td>
-              {[0, 1, 2, 3, 4, 5, 6].map((columnIndex: number) => 
-                <>
-                  <td
-                    key={rowIndex + '_' + columnIndex}
-                    className='border border-green-600'
-                  >{schedule[rowIndex][columnIndex]}</td>
-                </>
-              )}
-            </tr>
-          )}
-        </tbody>
-      </table>
-      : <>Loading..</>}
-      <button
-        className='bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
-        onClick={() => generateSchedule()}
-      >Go</button>
+
       </div>
     </main>
   </div>
@@ -308,43 +289,3 @@ const App = () => {
 }
 
 export default App;
-
-// <>
-    //   {schedule ?
-    //   <table className='border-collapse border border-green-800'>
-    //     <thead>
-    //       <tr>
-    //         <th className='border border-green-600'>Name</th>
-    //         <th className='border border-green-600'>Grade</th>
-    //         <th className='border border-green-600'>Monday</th>
-    //         <th className='border border-green-600'>Tuesday</th>
-    //         <th className='border border-green-600'>Wednesday</th>
-    //         <th className='border border-green-600'>Thursday</th>
-    //         <th className='border border-green-600'>Friday</th>
-    //         <th className='border border-green-600'>Saturday</th>
-    //         <th className='border border-green-600'>Sunday</th>
-    //       </tr>
-    //     </thead>
-    //     <tbody>
-    //       {employees.map((employee: Employee, rowIndex: number) =>
-    //         <tr key={rowIndex}>
-    //           <td className='border border-green-600'>{employee.name}</td>
-    //           <td className='border border-green-600'>{employee.grade}</td>
-    //           {[0, 1, 2, 3, 4, 5, 6].map((columnIndex: number) => 
-    //             <>
-    //               <td
-    //                 key={rowIndex + '_' + columnIndex}
-    //                 className='border border-green-600'
-    //               >{schedule[rowIndex][columnIndex]}</td>
-    //             </>
-    //           )}
-    //         </tr>
-    //       )}
-    //     </tbody>
-    //   </table>
-    //   : <>Loading..</>}
-    //   <button
-    //     className='bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
-    //     onClick={() => generateSchedule()}
-    //   >Go</button>
-    // </>

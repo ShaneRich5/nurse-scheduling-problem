@@ -79,7 +79,7 @@ const App = () => {
         if (currentEmployeeShift !== 'D') {
           grid[index][dayOfWeek] = shifts.pop()
         }
-        
+
         index++
       }
     }

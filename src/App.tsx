@@ -35,9 +35,12 @@ const App = () => {
   }, [employees, initializeGrid])
 
   const generateSchedule = () => {
-    const grid = initializeGrid()
+    let grid = initializeGrid()
+    
+    grid = grid.sort(() => Math.random() - 0.5)
 
-    // useful to track, helps when manul
+    // useful to track, helps when manual 'days-off' are set
+    // not correnb
     const daysOffCount = [0, 0, 0, 0, 0, 0, 0]
     const morningShiftCount = [0, 0, 0, 0, 0, 0, 0]
     const nightShiftCount = [0, 0, 0, 0, 0, 0, 0]
@@ -45,8 +48,6 @@ const App = () => {
     let startingDayOff = 0
 
     for (let i = 0; i < employees.length; i++) {
-      console.log('startingDayOff:', startingDayOff)
-
       grid[i][startingDayOff] = 'D'
       daysOffCount[startingDayOff] += 1
 
@@ -56,6 +57,8 @@ const App = () => {
         startingDayOff++
       }
     }
+
+    grid = grid.sort(() => Math.random() - 0.5)
 
     for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
       const daysOff = daysOffCount[dayOfWeek]
